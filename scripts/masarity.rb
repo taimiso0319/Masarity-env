@@ -101,6 +101,16 @@ class Masarity
             8025 => 8025,
             27017 => 27017
         }
+
+        # Use Default Port Forwarding Unless Overridden
+        unless settings.has_key?('default_ports') && settings['default_ports'] == false
+            default_ports.each do |guest, host|
+                unless settings['ports'].any? { |mapping| mapping['guest'] == guest }
+                    config.vm.network 'forwarded_port', guest: guest, host: host, auto_correct: true
+                end
+            end
+        end
+
         # Add Custom Ports From Configuration
         if settings.has_key?('ports')
             settings['ports'].each do |port|

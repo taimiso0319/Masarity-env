@@ -338,8 +338,8 @@ class Masarity
         end
 
         config.vm.provision 'shell' do |s|
-            s.name = 'Restarting Cron'
-            s.inline = 'sudo service cron restart'
+            s.name = 'Restarting Crond'
+            s.inline = 'sudo service crond restart'
         end
 
         config.vm.provision 'shell' do |s|

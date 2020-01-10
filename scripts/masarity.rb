@@ -312,28 +312,28 @@ class Masarity
         if settings.has_key?('variables')
             settings['variables'].each do |var|
                 config.vm.provision 'shell' do |s|
-                    s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.1/fpm/pool.d/www.conf"
+                    s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php-fpm.d/www.conf"
                     s.args = [var['key'], var['value']]
                 end
               
-                config.vm.provision 'shell' do |s|
-                    s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.2/fpm/pool.d/www.conf"
-                    s.args = [var['key'], var['value']]
-                end
-              
-                config.vm.provision 'shell' do |s|
-                    s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.3/fpm/pool.d/www.conf"
-                    s.args = [var['key'], var['value']]
-                end
-              
-                config.vm.provision 'shell' do |s|
-                    s.inline = "echo \"\n# Set Masarity Environment Variable\nexport $1=$2\" >> /home/vagrant/.profile"
-                    s.args = [var['key'], var['value']]
-                end
+                # config.vm.provision 'shell' do |s|
+                #     s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.2/fpm/pool.d/www.conf"
+                #     s.args = [var['key'], var['value']]
+                # end
+                # 
+                # config.vm.provision 'shell' do |s|
+                #     s.inline = "echo \"\nenv[$1] = '$2'\" >> /etc/php/7.3/fpm/pool.d/www.conf"
+                #     s.args = [var['key'], var['value']]
+                # end
+                # 
+                # config.vm.provision 'shell' do |s|
+                #     s.inline = "echo \"\n# Set Masarity Environment Variable\nexport $1=$2\" >> /home/vagrant/.profile"
+                #     s.args = [var['key'], var['value']]
+                # end
             end
           
             config.vm.provision 'shell' do |s|
-                s.inline = 'service php7.1-fpm restart; service php7.2-fpm restart; service php7.3-fpm restart;'
+                s.inline = 'sudo service php-fpm restart;'
             end
         end
 
@@ -344,7 +344,7 @@ class Masarity
 
         config.vm.provision 'shell' do |s|
             s.name = 'Restarting Nginx'
-            s.inline = 'sudo service nginx restart; sudo service php7.1-fpm restart; sudo service php7.2-fpm restart; sudo service php7.3-fpm restart;'
+            s.inline = 'sudo service nginx restart; sudo service php-fpm restart;'
         end
 
         ## Install CouchDB If Necessary

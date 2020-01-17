@@ -326,25 +326,25 @@ class Masarity
                 #     s.args = [var['key'], var['value']]
                 # end
                 # 
-                # config.vm.provision 'shell' do |s|
-                #     s.inline = "echo \"\n# Set Masarity Environment Variable\nexport $1=$2\" >> /home/vagrant/.profile"
-                #     s.args = [var['key'], var['value']]
-                # end
+                config.vm.provision 'shell' do |s|
+                    s.inline = "echo \"\n# Set Masarity Environment Variable\nexport $1=$2\" >> /home/vagrant/.profile"
+                    s.args = [var['key'], var['value']]
+                end
             end
           
             config.vm.provision 'shell' do |s|
-                s.inline = 'sudo service php-fpm restart;'
+                s.inline = 'sudo systemctl restart php-fpm;'
             end
         end
 
         config.vm.provision 'shell' do |s|
             s.name = 'Restarting Crond'
-            s.inline = 'sudo service crond restart'
+            s.inline = 'sudo systemctl restart crond;'
         end
 
         config.vm.provision 'shell' do |s|
             s.name = 'Restarting Nginx'
-            s.inline = 'sudo service nginx restart; sudo service php-fpm restart;'
+            s.inline = 'sudo systemctl restart nginx; sudo systemctl restart php-fpm;'
         end
 
         ## Install CouchDB If Necessary
@@ -416,11 +416,11 @@ class Masarity
                     s.args = [db]
                 end
               
-                config.vm.provision 'shell' do |s|
-                    s.name = 'Creating Postgres Database: ' + db
-                    s.path = script_dir + '/create-postgres.sh'
-                    s.args = [db]
-                end
+                #config.vm.provision 'shell' do |s|
+                #    s.name = 'Creating Postgres Database: ' + db
+                #    s.path = script_dir + '/create-postgres.sh'
+                #    s.args = [db]
+                #end
               
                 #if settings.has_key?('mongodb') && settings['mongodb']
                 #    config.vm.provision 'shell' do |s|
@@ -480,18 +480,18 @@ class Masarity
             s.privileged = false
         end
 
-        ## Configure Blackfire.io
-        #if settings.has_key?('blackfire')
-        #    config.vm.provision 'shell' do |s|
-        #        s.path = script_dir + '/blackfire.sh'
-        #        s.args = [
-        #            settings['blackfire'][0]['id'],
-        #            settings['blackfire'][0]['token'],
-        #            settings['blackfire'][0]['client-id'],
-        #            settings['blackfire'][0]['client-token']
-        #        ]
-        #    end
-        #end
+        # Configure Blackfire.io
+        if settings.has_key?('blackfire')
+            config.vm.provision 'shell' do |s|
+                s.path = script_dir + '/blackfire.sh'
+                s.args = [
+                    settings['blackfire'][0]['id'],
+                    settings['blackfire'][0]['token'],
+                    settings['blackfire'][0]['client-id'],
+                    settings['blackfire'][0]['client-token']
+                ]
+            end
+        end
 
         # Add config file for ngrok
         config.vm.provision 'shell' do |s|
@@ -500,10 +500,10 @@ class Masarity
             s.privileged = false
         end
 
-        config.vm.provision 'shell' do |s|
-            s.name = 'Update motd'
-            s.inline = 'sudo service motd-news restart'
-        end
+        # config.vm.provision 'shell' do |s|
+        #     s.name = 'Update motd'
+        #     s.inline = 'sudo service motd-news restart'
+        # end
 
         if settings.has_key?('backup') && settings['backup'] && (Vagrant::VERSION >= '2.1.0' || Vagrant.has_plugin?('vagrant-triggers'))
             dir_prefix = '/vagrant/'
@@ -514,14 +514,14 @@ class Masarity
         end
 
         # Turn off CFQ scheduler idling https://github.com/laravel/homestead/issues/896
-        if settings.has_key?('disable_cfq')
-            config.vm.provision 'shell' do |s|
-                s.inline = 'sudo sh -c "echo 0 >> /sys/block/sda/queue/iosched/slice_idle"'
-            end
-            config.vm.provision 'shell' do |s|
-                s.inline = 'sudo sh -c "echo 0 >> /sys/block/sda/queue/iosched/group_idle"'
-            end
-        end
+        # if settings.has_key?('disable_cfq')
+        #     config.vm.provision 'shell' do |s|
+        #         s.inline = 'sudo sh -c "echo 0 >> /sys/block/sda/queue/iosched/slice_idle"'
+        #     end
+        #     config.vm.provision 'shell' do |s|
+        #         s.inline = 'sudo sh -c "echo 0 >> /sys/block/sda/queue/iosched/group_idle"'
+        #     end
+        # end
     end
     def self.backup_mysql(database, dir, config)
         now = Time.now.strftime("%Y%m%d%H%M")

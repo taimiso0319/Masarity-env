@@ -12,7 +12,7 @@ class Masarity
         end
 
         config.vm.define settings['name'] ||= 'masarity-7'
-        config.vm.box = settings['box'] ||= 'masarity'
+        config.vm.box = settings['box'] ||= 'masarity-co8'
         # config.vm.box_version = settings['version'] ||= '>=7.0.0'
         config.vm.hostname = settings['hostname'] ||= 'masarity'
 

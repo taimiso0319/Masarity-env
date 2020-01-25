@@ -86,8 +86,8 @@ block="server {
         deny all;
     }
 
-    ssl_certificate     /etc/nginx/ssl/$1.crt;
-    ssl_certificate_key /etc/nginx/ssl/$1.key;
+    # ssl_certificate     /etc/nginx/ssl/$1.crt;
+    # ssl_certificate_key /etc/nginx/ssl/$1.key;
 }
 "
 

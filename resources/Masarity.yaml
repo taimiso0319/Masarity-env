@@ -10,8 +10,8 @@ keys:
   - ~/.ssh/id_rsa
 
 folders: 
-  - map: ~/code
-    to: /home/vagrant/code
+  - map: ~/Projects/WebServer/Masarity
+    to: /home/vagrant/code/
 
 sites:
   - map: masarity.test
